@@ -8,14 +8,13 @@ use Uploader\Uploader;
  */
 class Base64 implements AdapterInterface
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function check($original)
-	{
+    /**
+     * {@inheritdoc}
+     */
+    public static function check($original)
+    {
         return is_string($original) && (substr($original, 0, 5) === 'data:');
-	}
-
+    }
 
     /**
      * {@inheritdoc}
@@ -32,7 +31,6 @@ class Base64 implements AdapterInterface
             $uploader->setExtension($match[1]);
         }
     }
-
 
     /**
      * {@inheritdoc}

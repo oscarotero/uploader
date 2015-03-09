@@ -6,6 +6,8 @@ class Uploader
     protected $cwd;
     protected $prefix;
     protected $overwrite = false;
+    protected $adapter;
+    protected $original;
 
     protected $adapters = [
         'Uploader\\Adapters\\Base64',
@@ -13,8 +15,6 @@ class Uploader
         'Uploader\\Adapters\\Url',
     ];
 
-    protected $adapter;
-    protected $original;
     protected $destination = [
         'directory' => null,
         'filename' => null,
@@ -31,9 +31,9 @@ class Uploader
 
     /**
      * Set a prefix for the filenames
-     * 
+     *
      * @param string $prefix
-     * 
+     *
      * @return $this
      */
     public function setPrefix($prefix)
@@ -45,9 +45,9 @@ class Uploader
 
     /**
      * Set the overwrite configuration
-     * 
+     *
      * @param boolean $overwrite
-     * 
+     *
      * @return $this
      */
     public function setOverwrite($overwrite)
@@ -59,9 +59,9 @@ class Uploader
 
     /**
      * Set the destination of the file. It includes the directory, filename and extension
-     * 
+     *
      * @param string $destination
-     * 
+     *
      * @return $this
      */
     public function setDestination($destination)
@@ -73,9 +73,9 @@ class Uploader
 
     /**
      * Returns the file destination
-     * 
+     *
      * @param boolean $absolute Whether or not returns the cwd
-     * 
+     *
      * @return string
      */
     public function getDestination($absolute = false)
@@ -85,9 +85,9 @@ class Uploader
 
     /**
      * Set only the directory of the destination
-     * 
+     *
      * @param string $directory
-     * 
+     *
      * @return $this
      */
     public function setDirectory($directory)
@@ -99,7 +99,7 @@ class Uploader
 
     /**
      * Get the directory of the destination
-     * 
+     *
      * @return null|string
      */
     public function getDirectory()
@@ -109,9 +109,9 @@ class Uploader
 
     /**
      * Set only the filename of the destination
-     * 
+     *
      * @param string $filename
-     * 
+     *
      * @return $this
      */
     public function setFilename($filename)
@@ -123,7 +123,7 @@ class Uploader
 
     /**
      * Get the filename of the destination
-     * 
+     *
      * @return null|string
      */
     public function getFilename()
@@ -133,9 +133,9 @@ class Uploader
 
     /**
      * Set only the file extension of the destination
-     * 
+     *
      * @param string $extension
-     * 
+     *
      * @return $this
      */
     public function setExtension($extension)
@@ -147,7 +147,7 @@ class Uploader
 
     /**
      * Get the extension of the destination
-     * 
+     *
      * @return null|string
      */
     public function getExtension()
@@ -158,9 +158,9 @@ class Uploader
     /**
      * Set the original source
      *
-     * @param mixed $original
+     * @param mixed       $original
      * @param null|string $adapter
-     * 
+     *
      * @throws \Exception On error
      *
      * @return Uploader A new cloned copy with the source and adapter configured
@@ -186,8 +186,6 @@ class Uploader
 
         return $new;
     }
-
-
 
     /**
      * Save the file
@@ -215,9 +213,9 @@ class Uploader
 
     /**
      * Helper function used to parse a path
-     * 
+     *
      * @param string $path
-     * 
+     *
      * @return array With 3 keys: directory, filename and extension
      */
     public static function parsePath($path)
@@ -233,9 +231,9 @@ class Uploader
 
     /**
      * Resolve paths with ../, //, etc...
-     * 
+     *
      * @param string $path
-     * 
+     *
      * @return string
      */
     private static function fixPath($path)

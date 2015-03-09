@@ -8,28 +8,27 @@ use Uploader\Uploader;
  */
 interface AdapterInterface
 {
-	/**
-	 * Check whether or not the value has the right format
-	 * 
-	 * @param mixed $original
-	 * 
-	 * @return boolean
-	 */
-	public static function check($original);
+    /**
+     * Check whether or not the value has the right format
+     *
+     * @param mixed $original
+     *
+     * @return boolean
+     */
+    public static function check($original);
 
     /**
      * Set the right destination according with the original source
-     * 
+     *
      * @param Uploader $uploader
-     * @param mixed $original
+     * @param mixed    $original
      */
     public static function fixDestination(Uploader $uploader, $original);
-
 
     /**
      * Save the file
      *
-     * @param mixed    $original
+     * @param mixed  $original
      * @param string $destination
      *
      * @throws \Exception On error

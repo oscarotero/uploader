@@ -8,13 +8,13 @@ use Uploader\Uploader;
  */
 class Upload implements AdapterInterface
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function check($original)
-	{
-		return is_array($original) && isset($original['tmp_name']);
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public static function check($original)
+    {
+        return is_array($original) && isset($original['tmp_name']);
+    }
 
     /**
      * {@inheritdoc}
@@ -31,7 +31,6 @@ class Upload implements AdapterInterface
             $uploader->setExtension($path['extension']);
         }
     }
-
 
     /**
      * {@inheritdoc}

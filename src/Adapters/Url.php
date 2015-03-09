@@ -8,13 +8,13 @@ use Uploader\Uploader;
  */
 class Url implements AdapterInterface
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function check($original)
-	{
+    /**
+     * {@inheritdoc}
+     */
+    public static function check($original)
+    {
         return is_string($original) && filter_var($original, FILTER_VALIDATE_URL);
-	}
+    }
 
     /**
      * {@inheritdoc}
@@ -31,7 +31,6 @@ class Url implements AdapterInterface
             $uploader->setExtension($path['extension']);
         }
     }
-
 
     /**
      * {@inheritdoc}
