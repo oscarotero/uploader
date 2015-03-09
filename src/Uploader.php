@@ -1,14 +1,20 @@
 <?php
 namespace Uploader;
 
-abstract class Uploader
+class Uploader
 {
     protected $cwd;
+    protected $prefix;
+    protected $overwrite = false;
+
     protected $adapters = [
         'Uploader\\Adapters\\Base64',
         'Uploader\\Adapters\\Upload',
         'Uploader\\Adapters\\Url',
     ];
+
+    protected $adapter;
+    protected $original;
     protected $destination = [
         'directory' => null,
         'filename' => null,
@@ -24,23 +30,45 @@ abstract class Uploader
     }
 
     /**
-     * Check whether or not the file destination exists
+     * Set a prefix for the filenames
      * 
-     * @return boolean
+     * @param string $prefix
+     * 
+     * @return $this
      */
-    public function exists()
+    public function setPrefix($prefix)
     {
-        return is_file($this->getDestination());
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
+     * Set the overwrite configuration
+     * 
+     * @param boolean $overwrite
+     * 
+     * @return $this
+     */
+    public function setOverwrite($overwrite)
+    {
+        $this->overwrite = (boolean) $overwrite;
+
+        return $this;
     }
 
     /**
      * Set the destination of the file. It includes the directory, filename and extension
      * 
      * @param string $destination
+     * 
+     * @return $this
      */
     public function setDestination($destination)
     {
         $this->destination = self::parsePath($destination);
+
+        return $this;
     }
 
     /**
@@ -50,19 +78,23 @@ abstract class Uploader
      * 
      * @return string
      */
-    public function getDestination($absolute = true)
+    public function getDestination($absolute = false)
     {
-        return self::fixPath(($absolute ? '/'.$this->cwd : ''), $this->destination['directory'], $this->destination['filename'].'.'.$this->destination['extension']);
+        return self::fixPath(($absolute ? '/'.$this->cwd : ''), $this->getDirectory(), $this->getFilename().'.'.$this->getExtension());
     }
 
     /**
      * Set only the directory of the destination
      * 
      * @param string $directory
+     * 
+     * @return $this
      */
     public function setDirectory($directory)
     {
         $this->destination['directory'] = $directory;
+
+        return $this;
     }
 
     /**
@@ -79,10 +111,14 @@ abstract class Uploader
      * Set only the filename of the destination
      * 
      * @param string $filename
+     * 
+     * @return $this
      */
     public function setFilename($filename)
     {
         $this->destination['filename'] = $filename;
+
+        return $this;
     }
 
     /**
@@ -92,17 +128,21 @@ abstract class Uploader
      */
     public function getFilename()
     {
-        return empty($this->destination['filename']) ? null : $this->destination['filename'];
+        return empty($this->destination['filename']) ? null : $this->prefix.$this->destination['filename'];
     }
 
     /**
      * Set only the file extension of the destination
      * 
      * @param string $extension
+     * 
+     * @return $this
      */
     public function setExtension($extension)
     {
         $this->destination['extension'] = $extension;
+
+        return $this;
     }
 
     /**
@@ -116,33 +156,61 @@ abstract class Uploader
     }
 
     /**
-     * Save the file
+     * Set the original source
      *
      * @param mixed $original
      * @param null|string $adapter
      * 
      * @throws \Exception On error
      *
-     * @return string The created filename
+     * @return Uploader A new cloned copy with the source and adapter configured
      */
-    public function save($original, $adapter = null)
+    public function with($original, $adapter = null)
     {
-        if ($adapter === null) {
-            foreach ($this->adapters as $each) {
+        $new = clone $this;
+        $new->original = $original;
+        $new->adapter = $adapter;
+
+        if ($new->adapter === null) {
+            foreach ($new->adapters as $each) {
                 if ($each::check($original)) {
-                    $adapter = $each;
+                    $new->adapter = $each;
                     break;
                 }
             }
         }
 
-        if ($adapter === null || !class_exists($adapter)) {
+        if ($new->adapter === null || !class_exists($new->adapter)) {
             throw new \InvalidArgumentException('No valid adapter found');
         }
 
-        $adapter::save($this, $original);
+        return $new;
+    }
 
-        return $this->getDestination(false);
+
+
+    /**
+     * Save the file
+     *
+     * @throws \Exception On error
+     *
+     * @return $this
+     */
+    public function save()
+    {
+        if (!$this->original || !$this->adapter) {
+            throw new \Exception('Original source is not defined');
+        }
+
+        call_user_func("{$this->adapter}::fixDestination", $this, $this->original);
+
+        $destination = $this->getDestination(true);
+
+        if ($this->overwrite || !is_file($destination)) {
+            call_user_func("{$this->adapter}::save", $this->original, $destination);
+        }
+
+        return $this;
     }
 
     /**
@@ -163,6 +231,13 @@ abstract class Uploader
         ];
     }
 
+    /**
+     * Resolve paths with ../, //, etc...
+     * 
+     * @param string $path
+     * 
+     * @return string
+     */
     private static function fixPath($path)
     {
         if (func_num_args() > 1) {

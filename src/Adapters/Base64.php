@@ -6,7 +6,7 @@ use Uploader\Uploader;
 /**
  * Adapter to save a file from an url
  */
-class Url implements AdapterInterface
+class Base64 implements AdapterInterface
 {
 	/**
 	 * {@inheritdoc}
@@ -20,7 +20,7 @@ class Url implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public static function save(Uploader $uploader, $original)
+    public static function fixDestination(Uploader $uploader, $original)
     {
         if (!$uploader->getFilename()) {
             $uploader->setFilename(uniqid());
@@ -31,8 +31,15 @@ class Url implements AdapterInterface
         if (!$uploader->getExtension() && preg_match('|data:\w+/(\w+)|', $fileData[0], $match)) {
             $uploader->setExtension($match[1]);
         }
+    }
 
-        $destination = $uploader->getDestination();
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function save($original, $destination)
+    {
+        $fileData = explode(';base64,', $original, 2);
 
         if (!@file_put_contents($destination, base64_decode($fileData[1]))) {
             throw new \Exception("Unable to copy base64 to '{$destination}'");

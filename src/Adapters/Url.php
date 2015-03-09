@@ -16,24 +16,28 @@ class Url implements AdapterInterface
         return is_string($original) && filter_var($original, FILTER_VALIDATE_URL);
 	}
 
-
     /**
      * {@inheritdoc}
      */
-    public static function save(Uploader $uploader, $original)
+    public static function fixDestination(Uploader $uploader, $original)
     {
         $path = Uploader::parsePath(parse_url($original, PHP_URL_PATH));
 
         if (!$uploader->getFilename()) {
-            $uploader->setFilename($uploaded['name']);
+            $uploader->setFilename($path['filename']);
         }
 
         if (!$uploader->getExtension()) {
-            $uploader->setExtension($uploaded['extension']);
+            $uploader->setExtension($path['extension']);
         }
+    }
 
-        $destination = $uploader->getDestination();
 
+    /**
+     * {@inheritdoc}
+     */
+    public static function save($original, $destination)
+    {
         if (!@rename($original['tmp_name'], $destination)) {
             throw new \Exception("Unable to copy '{$original['tmp_name']}' to '{$destination}'");
         }

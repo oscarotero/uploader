@@ -17,16 +17,22 @@ interface AdapterInterface
 	 */
 	public static function check($original);
 
+    /**
+     * Set the right destination according with the original source
+     * 
+     * @param Uploader $uploader
+     * @param mixed $original
+     */
+    public static function fixDestination(Uploader $uploader, $original);
+
 
     /**
      * Save the file
      *
-     * @param Uploader $uploader
      * @param mixed    $original
+     * @param string $destination
      *
      * @throws \Exception On error
-     *
-     * @return string The created filename
      */
-    public function save(Uploader $uploader, $original);
+    public static function save($original, $destination);
 }
