@@ -1,11 +1,11 @@
 <?php
 namespace Uploader;
 
+use Closure;
+
 class Uploader
 {
     protected $cwd;
-    protected $prefix;
-    protected $overwrite = false;
     protected $adapter;
     protected $original;
 
@@ -15,7 +15,18 @@ class Uploader
         'Uploader\\Adapters\\Url',
     ];
 
-    protected $destination = [
+    protected $callbacks = [
+        'destination' => null,
+        'prefix' => null,
+        'overwrite' => null,
+        'directory' => null,
+        'filename' => null,
+        'extension' => null,
+    ];
+
+    protected $options = [
+        'prefix' => null,
+        'overwrite' => false,
         'directory' => null,
         'filename' => null,
         'extension' => null,
@@ -32,41 +43,61 @@ class Uploader
     /**
      * Set a prefix for the filenames
      *
-     * @param string $prefix
+     * @param string|Closure $prefix
      *
      * @return $this
      */
     public function setPrefix($prefix)
     {
-        $this->prefix = $prefix;
+        return $this->setOption('prefix', $prefix);
+    }
 
-        return $this;
+    /**
+     * Set a prefix for the filenames
+     *
+     * @return string|null
+     */
+    public function getPrefix()
+    {
+        return empty($this->options['prefix']) ? null : $this->options['prefix'];
     }
 
     /**
      * Set the overwrite configuration
      *
-     * @param boolean $overwrite
+     * @param boolean|Closure $overwrite
      *
      * @return $this
      */
     public function setOverwrite($overwrite)
     {
-        $this->overwrite = (boolean) $overwrite;
+        return $this->setOption('overwrite', $overwrite);
+    }
 
-        return $this;
+    /**
+     * Get the overwrite configuration
+     *
+     * @return boolean
+     */
+    public function getOverwrite()
+    {
+        return (boolean) $this->options['overwrite'];
     }
 
     /**
      * Set the destination of the file. It includes the directory, filename and extension
      *
-     * @param string $destination
+     * @param string|Closure $destination
      *
      * @return $this
      */
     public function setDestination($destination)
     {
-        $this->destination = self::parsePath($destination);
+        if ($destination instanceof Closure) {
+            $this->callbacks['destination'] = $destination;
+        } else {
+            $this->options = self::parsePath($destination) + $this->options;
+        }
 
         return $this;
     }
@@ -80,21 +111,19 @@ class Uploader
      */
     public function getDestination($absolute = false)
     {
-        return self::fixPath(($absolute ? '/'.$this->cwd : ''), $this->getDirectory(), $this->getFilename().'.'.$this->getExtension());
+        return self::fixPath(($absolute ? '/'.$this->cwd : ''), $this->getDirectory(), $this->getPrefix().$this->getFilename().'.'.$this->getExtension());
     }
 
     /**
      * Set only the directory of the destination
      *
-     * @param string $directory
+     * @param string|Closure $directory
      *
      * @return $this
      */
     public function setDirectory($directory)
     {
-        $this->destination['directory'] = $directory;
-
-        return $this;
+        return $this->setOption('directory', $directory);
     }
 
     /**
@@ -104,21 +133,19 @@ class Uploader
      */
     public function getDirectory()
     {
-        return empty($this->destination['directory']) ? null : $this->destination['directory'];
+        return empty($this->options['directory']) ? null : $this->options['directory'];
     }
 
     /**
      * Set only the filename of the destination
      *
-     * @param string $filename
+     * @param string|Closure $filename
      *
      * @return $this
      */
     public function setFilename($filename)
     {
-        $this->destination['filename'] = $filename;
-
-        return $this;
+        return $this->setOption('filename', $filename);
     }
 
     /**
@@ -128,21 +155,19 @@ class Uploader
      */
     public function getFilename()
     {
-        return empty($this->destination['filename']) ? null : $this->prefix.$this->destination['filename'];
+        return empty($this->options['filename']) ? null : $this->options['filename'];
     }
 
     /**
      * Set only the file extension of the destination
      *
-     * @param string $extension
+     * @param string|Closure $extension
      *
      * @return $this
      */
     public function setExtension($extension)
     {
-        $this->destination['extension'] = $extension;
-
-        return $this;
+        return $this->setOption('extension', $extension);
     }
 
     /**
@@ -152,7 +177,7 @@ class Uploader
      */
     public function getExtension()
     {
-        return empty($this->destination['extension']) ? null : $this->destination['extension'];
+        return empty($this->options['extension']) ? null : strtolower($this->options['extension']);
     }
 
     /**
@@ -161,7 +186,7 @@ class Uploader
      * @param mixed       $original
      * @param null|string $adapter
      *
-     * @throws \Exception On error
+     * @throws \InvalidArgumentException On error
      *
      * @return Uploader A new cloned copy with the source and adapter configured
      */
@@ -202,10 +227,42 @@ class Uploader
 
         call_user_func("{$this->adapter}::fixDestination", $this, $this->original);
 
+        //Execute callbacks
+        foreach ($this->callbacks as $name => $callback) {
+            if ($callback) {
+                if ($name === 'destination') {
+                    $this->setDestination($callback($this));
+                } else {
+                    $this->options[$name] = $callback($this);
+                }
+            }
+        }
+
+        var_dump($this->options);
+
         $destination = $this->getDestination(true);
 
-        if ($this->overwrite || !is_file($destination)) {
+        if ($this->getOverwrite() || !is_file($destination)) {
             call_user_func("{$this->adapter}::save", $this->original, $destination);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Saves an option
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return $this
+     */
+    protected function setOption($name, $value)
+    {
+        if ($value instanceof Closure) {
+            $this->callbacks[$name] = $value;
+        } else {
+            $this->options[$name] = $value;
         }
 
         return $this;
