@@ -62,7 +62,7 @@ try {
 }
 ```
 
-The method `with` creates clones the instance with the current configuration, so you can configure the upload instance first and then use `with` for each individual upload. Example:
+The method `with` clones the instance with the current configuration, so you can configure the upload instance first and then use `with` for each individual upload. Example:
 
 ```php
 $uploader = new Uploader\Uploader(__DIR__.'/my-uploads');
