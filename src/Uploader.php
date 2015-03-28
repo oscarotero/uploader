@@ -221,7 +221,7 @@ class Uploader
      */
     public function save()
     {
-        if (!$this->original || !$this->adapter) {
+        if (!$this->original || empty($this->adapter)) {
             throw new \Exception('Original source is not defined');
         }
 
@@ -237,8 +237,6 @@ class Uploader
                 }
             }
         }
-
-        var_dump($this->options);
 
         $destination = $this->getDestination(true);
 
