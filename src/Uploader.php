@@ -37,7 +37,31 @@ class Uploader
      */
     public function __construct($cwd)
     {
+        $this->setCwd($cwd);
+    }
+
+    /**
+     * Set the current working directory
+     *
+     * @param string $cwd
+     *
+     * @return $this
+     */
+    public function setCwd($cwd)
+    {
         $this->cwd = $cwd;
+
+        return $this;
+    }
+
+    /**
+     * Set a prefix for the filenames
+     *
+     * @return string|null
+     */
+    public function getCwd()
+    {
+        return $this->cwd;
     }
 
     /**
