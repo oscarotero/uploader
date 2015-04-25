@@ -41,10 +41,10 @@ class Upload implements AdapterInterface
             throw new \Exception("Unable to copy the uploaded file because has an error");
         }
 
-        if (!@rename($original['tmp_name'], $destination)) {
+        if (!copy($original['tmp_name'], $destination)) {
             throw new \Exception("Unable to copy '{$original['tmp_name']}' to '{$destination}'");
         }
 
-        chmod($destination, 755);
+        chmod($destination, 0755);
     }
 }
