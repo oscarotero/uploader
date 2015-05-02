@@ -265,6 +265,10 @@ class Uploader
         $destination = $this->getDestination(true);
 
         if ($this->getOverwrite() || !is_file($destination)) {
+            if (!is_dir(dirname($destination))) {
+                mkdir(dirname($destination), 0777, true);
+            }
+
             call_user_func("{$this->adapter}::save", $this->original, $destination);
         }
 
