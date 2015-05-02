@@ -28,16 +28,21 @@ $uploader
 	->save();
 ```
 
-## Options
+## API
 
-You can define the following options before save:
+The following methods configure how the uploaded file will be saved
 
-* **prefix** (string|Closure) Custom filename prefix.
-* **overwrite** (boolean|Closure) Whether or not overwrite existing files
-* **destination** (string|Closure) The destination file (excluding the base path)
-* **directory** (string|Closure) To change only the directory of the destination
-* **filename** (string|Closure) To change only the filename of the destination
-* **extension** (string|Closure) To change only the extension of the destination
+Setter | Getter | Description
+-------|--------|------------
+`setPrefix(string|Closure)` | `getPrefix()` | Custom filename prefix.
+`setOverwrite(boolean|Closure)` | `getOverwrite()` | Whether or not overwrite existing files
+`setDestination(boolean|Closure)` | `getDestination(bool $absolute = false)` | The destination file. If `$absolute` is `true`, returns the path with the cwd
+`setDirectory(string|Closure)` | `getDirectory()` | To change only the directory of the destination
+`setFilename(string|Closure)` | `getFilename()` | To change only the filename of the destination
+`setExtension(string|Closure)` | `getExtension()` | To change only the file extension of the destination
+`setCwd(string|Closure)` | `getCwd()` | To change the base path of the destination
+`setCreateDir(boolean|Closure)` | `getCreateDir()` | Whether or not create the destination directory if it does not exist
+
 
 Example:
 
@@ -47,7 +52,8 @@ $uploader = new Uploader\Uploader(__DIR__.'/my-uploads');
 $upload = $uploader
 	->with($_FILES['my-file'])
 	->setPrefix(uniqid())
-	->overwrite(true)
+	->setOverwrite(true)
+	->setCreateDir(true)
 	->setDirectory('files')
 	->setExtension(function ($upload) {
 		return strtolower($upload->getExtension());
