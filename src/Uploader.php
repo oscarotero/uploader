@@ -27,6 +27,7 @@ class Uploader
     protected $options = [
         'prefix' => null,
         'overwrite' => false,
+        'create_dir' => false,
         'directory' => null,
         'filename' => null,
         'extension' => null,
@@ -106,6 +107,28 @@ class Uploader
     public function getOverwrite()
     {
         return (boolean) $this->options['overwrite'];
+    }
+
+    /**
+     * Set the create_dir configuration
+     *
+     * @param boolean|Closure $create_dir
+     *
+     * @return $this
+     */
+    public function setCreateDir($create_dir)
+    {
+        return $this->setOption('create_dir', $create_dir);
+    }
+
+    /**
+     * Get the create_dir configuration
+     *
+     * @return boolean
+     */
+    public function getCreateDir()
+    {
+        return (boolean) $this->options['create_dir'];
     }
 
     /**
@@ -265,7 +288,7 @@ class Uploader
         $destination = $this->getDestination(true);
 
         if ($this->getOverwrite() || !is_file($destination)) {
-            if (!is_dir(dirname($destination))) {
+            if ($this->getCreateDir() && !is_dir(dirname($destination))) {
                 mkdir(dirname($destination), 0777, true);
             }
 
