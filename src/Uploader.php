@@ -11,6 +11,7 @@ class Uploader
 
     protected $adapters = [
         'Uploader\\Adapters\\Base64',
+        'Uploader\\Adapters\\Psr7',
         'Uploader\\Adapters\\Upload',
         'Uploader\\Adapters\\Url',
     ];
