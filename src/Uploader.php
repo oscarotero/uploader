@@ -365,7 +365,7 @@ class Uploader
     private static function fixPath($path)
     {
         if (func_num_args() > 1) {
-            return static::fixPath(implode('/', func_get_args()));
+            return self::fixPath(implode('/', func_get_args()));
         }
 
         $replace = ['#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#'];
