@@ -13,19 +13,19 @@ Created by Oscar Otero <http://oscarotero.com> <oom@oscarotero.com>
 $uploader = new Uploader\Uploader('/base/path/to/uploads');
 
 //Save an uploaded file:
-$uploader
+$file = $uploader($_FILES['my-file']);
+
+//This is the same than:
+$file = $uploader
 	->with($_FILES['my-file'])
-	->save();
+	->save()
+	->getDestination();
 
 //Save a file from an url
-$uploader
-	->with('http://example.com/files/file1.jpg')
-	->save();
+$file = $uploader('http://example.com/files/file1.jpg');
 
 //Save from base64 value
-$uploader
-	->with('data:image/png;base64,...')
-	->save();
+$file = $uploader('data:image/png;base64,...');
 ```
 
 ## API
@@ -85,5 +85,25 @@ foreach ($_FILES as $file) {
 	$upload = $uploader->with($file)->save();
 
 	echo 'Saved file '.$upload->getDestination();
+}
+```
+
+You can use the uploader as a callable:
+
+```php
+$uploader = new Uploader\Uploader(__DIR__.'/my-uploads');
+
+//Set configuration
+$uploader
+	->setPrefix(function () {
+		return uniqid();
+	}),
+	->setDirectory('uploads');
+
+//Saves all upload with this configuration
+foreach ($_FILES as $file) {
+	$dest = $uploader($file);
+
+	echo 'Saved file '.$dest;
 }
 ```

@@ -43,6 +43,24 @@ class Uploader
     }
 
     /**
+     * Execute a upload
+     *
+     * @param mixed       $original
+     * @param null|string $adapter
+     *
+     * @throws \InvalidArgumentException On error
+     *
+     * @return string The file destination
+     */
+    public function __invoke($original, $adapter = null)
+    {
+        return $this
+            ->with($original, $adapter)
+            ->save()
+            ->getDestination();
+    }
+
+    /**
      * Set the current working directory
      *
      * @param string $cwd
