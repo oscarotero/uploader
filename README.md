@@ -1,12 +1,12 @@
 # uploader
 
-Basic php library to upload files
+Basic php library to manage uploaded files
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/oscarotero/uploader/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/oscarotero/uploader/?branch=master)
 
 Created by Oscar Otero <http://oscarotero.com> <oom@oscarotero.com>
 
-## Usage
+## Basic usage
 
 ```php
 //Init a Uploader instance:
@@ -15,11 +15,8 @@ $uploader = new Uploader\Uploader('/base/path/to/uploads');
 //Save an uploaded file:
 $file = $uploader($_FILES['my-file']);
 
-//This is the same than:
-$file = $uploader
-	->with($_FILES['my-file'])
-	->save()
-	->getDestination();
+//Save a psr7 UploadedFileInterface instance
+$file = $uploader($uploadedFile);
 
 //Save a file from an url
 $file = $uploader('http://example.com/files/file1.jpg');
@@ -27,6 +24,29 @@ $file = $uploader('http://example.com/files/file1.jpg');
 //Save from base64 value
 $file = $uploader('data:image/png;base64,...');
 ```
+
+## Advanced usage
+```php
+//Init a Uploader instance:
+$uploader = new Uploader\Uploader('/base/path/to/uploads');
+
+//Add some configuration
+$uploader
+	->setPrefix(function () {
+		return uniqid();
+	})
+	->setDirectory('images');
+
+//Assign an input
+$imageUpload = $uploader->with($_FILES['my-image']);
+
+//Save
+$imageUpload->save();
+
+//Get the relative path
+echo $imageUpload->getDestination();
+```
+
 
 ## API
 
@@ -65,45 +85,5 @@ try {
 	echo 'The file has been saved in '.$upload->getDestination();
 } catch (Exception $e) {
 	echo $e->getMessage();
-}
-```
-
-The method `with` clones the instance with the current configuration, so you can configure the upload instance first and then use `with` for each individual upload. Example:
-
-```php
-$uploader = new Uploader\Uploader(__DIR__.'/my-uploads');
-
-//Set configuration
-$uploader
-	->setPrefix(function () {
-		return uniqid();
-	}),
-	->setDirectory('uploads');
-
-//Saves all upload with this configuration
-foreach ($_FILES as $file) {
-	$upload = $uploader->with($file)->save();
-
-	echo 'Saved file '.$upload->getDestination();
-}
-```
-
-You can use the uploader as a callable:
-
-```php
-$uploader = new Uploader\Uploader(__DIR__.'/my-uploads');
-
-//Set configuration
-$uploader
-	->setPrefix(function () {
-		return uniqid();
-	}),
-	->setDirectory('uploads');
-
-//Saves all upload with this configuration
-foreach ($_FILES as $file) {
-	$dest = $uploader($file);
-
-	echo 'Saved file '.$dest;
 }
 ```
