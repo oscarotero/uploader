@@ -1,10 +1,11 @@
 <?php
+
 namespace Uploader\Adapters;
 
 use Uploader\Uploader;
 
 /**
- * Adapter to save a file from an url
+ * Adapter to save a file from an url.
  */
 class Url implements AdapterInterface
 {

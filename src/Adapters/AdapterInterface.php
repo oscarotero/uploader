@@ -1,24 +1,25 @@
 <?php
+
 namespace Uploader\Adapters;
 
 use Uploader\Uploader;
 
 /**
- * Interface used by all adapters
+ * Interface used by all adapters.
  */
 interface AdapterInterface
 {
     /**
-     * Check whether or not the value has the right format
+     * Check whether or not the value has the right format.
      *
      * @param mixed $original
      *
-     * @return boolean
+     * @return bool
      */
     public static function check($original);
 
     /**
-     * Set the right destination according with the original source
+     * Set the right destination according with the original source.
      *
      * @param Uploader $uploader
      * @param mixed    $original
@@ -26,7 +27,7 @@ interface AdapterInterface
     public static function fixDestination(Uploader $uploader, $original);
 
     /**
-     * Save the file
+     * Save the file.
      *
      * @param mixed  $original
      * @param string $destination

@@ -1,11 +1,12 @@
 <?php
+
 namespace Uploader\Adapters;
 
 use Uploader\Uploader;
 use Psr\Http\Message\UploadedFileInterface;
 
 /**
- * Adapter to save a file from Psr7's UploadedFileInterface
+ * Adapter to save a file from Psr7's UploadedFileInterface.
  */
 class Psr7 implements AdapterInterface
 {

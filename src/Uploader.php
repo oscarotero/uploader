@@ -1,4 +1,5 @@
 <?php
+
 namespace Uploader;
 
 use Closure;
@@ -43,7 +44,7 @@ class Uploader
     }
 
     /**
-     * Execute a upload
+     * Execute a upload.
      *
      * @param mixed       $original
      * @param null|string $adapter
@@ -61,7 +62,7 @@ class Uploader
     }
 
     /**
-     * Set the current working directory
+     * Set the current working directory.
      *
      * @param string $cwd
      *
@@ -75,7 +76,7 @@ class Uploader
     }
 
     /**
-     * Set a prefix for the filenames
+     * Set a prefix for the filenames.
      *
      * @return string|null
      */
@@ -85,7 +86,7 @@ class Uploader
     }
 
     /**
-     * Set a prefix for the filenames
+     * Set a prefix for the filenames.
      *
      * @param string|Closure $prefix
      *
@@ -97,7 +98,7 @@ class Uploader
     }
 
     /**
-     * Set a prefix for the filenames
+     * Set a prefix for the filenames.
      *
      * @return string|null
      */
@@ -107,9 +108,9 @@ class Uploader
     }
 
     /**
-     * Set the overwrite configuration
+     * Set the overwrite configuration.
      *
-     * @param boolean|Closure $overwrite
+     * @param bool|Closure $overwrite
      *
      * @return $this
      */
@@ -119,9 +120,9 @@ class Uploader
     }
 
     /**
-     * Get the overwrite configuration
+     * Get the overwrite configuration.
      *
-     * @return boolean
+     * @return bool
      */
     public function getOverwrite()
     {
@@ -129,9 +130,9 @@ class Uploader
     }
 
     /**
-     * Set the create_dir configuration
+     * Set the create_dir configuration.
      *
-     * @param boolean|Closure $create_dir
+     * @param bool|Closure $create_dir
      *
      * @return $this
      */
@@ -141,9 +142,9 @@ class Uploader
     }
 
     /**
-     * Get the create_dir configuration
+     * Get the create_dir configuration.
      *
-     * @return boolean
+     * @return bool
      */
     public function getCreateDir()
     {
@@ -151,7 +152,7 @@ class Uploader
     }
 
     /**
-     * Set the destination of the file. It includes the directory, filename and extension
+     * Set the destination of the file. It includes the directory, filename and extension.
      *
      * @param string|Closure $destination
      *
@@ -169,9 +170,9 @@ class Uploader
     }
 
     /**
-     * Returns the file destination
+     * Returns the file destination.
      *
-     * @param boolean $absolute Whether or not returns the cwd
+     * @param bool $absolute Whether or not returns the cwd
      *
      * @return string
      */
@@ -181,7 +182,7 @@ class Uploader
     }
 
     /**
-     * Set only the directory of the destination
+     * Set only the directory of the destination.
      *
      * @param string|Closure $directory
      *
@@ -193,7 +194,7 @@ class Uploader
     }
 
     /**
-     * Get the directory of the destination
+     * Get the directory of the destination.
      *
      * @return null|string
      */
@@ -203,7 +204,7 @@ class Uploader
     }
 
     /**
-     * Set only the filename of the destination
+     * Set only the filename of the destination.
      *
      * @param string|Closure $filename
      *
@@ -215,7 +216,7 @@ class Uploader
     }
 
     /**
-     * Get the filename of the destination
+     * Get the filename of the destination.
      *
      * @return null|string
      */
@@ -225,7 +226,7 @@ class Uploader
     }
 
     /**
-     * Set only the file extension of the destination
+     * Set only the file extension of the destination.
      *
      * @param string|Closure $extension
      *
@@ -237,7 +238,7 @@ class Uploader
     }
 
     /**
-     * Get the extension of the destination
+     * Get the extension of the destination.
      *
      * @return null|string
      */
@@ -247,7 +248,7 @@ class Uploader
     }
 
     /**
-     * Set the original source
+     * Set the original source.
      *
      * @param mixed       $original
      * @param null|string $adapter
@@ -279,7 +280,7 @@ class Uploader
     }
 
     /**
-     * Save the file
+     * Save the file.
      *
      * @throws \Exception On error
      *
@@ -318,7 +319,7 @@ class Uploader
     }
 
     /**
-     * Saves an option
+     * Saves an option.
      *
      * @param string $name
      * @param mixed  $value
@@ -337,7 +338,7 @@ class Uploader
     }
 
     /**
-     * Helper function used to parse a path
+     * Helper function used to parse a path.
      *
      * @param string $path
      *
@@ -350,7 +351,7 @@ class Uploader
         return [
             'directory' => isset($components['dirname']) ? self::fixPath($components['dirname']) : null,
             'filename' => isset($components['filename']) ? $components['filename'] : null,
-            'extension' => isset($components['extension']) ? $components['extension'] : null
+            'extension' => isset($components['extension']) ? $components['extension'] : null,
         ];
     }
 

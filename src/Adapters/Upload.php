@@ -1,10 +1,11 @@
 <?php
+
 namespace Uploader\Adapters;
 
 use Uploader\Uploader;
 
 /**
- * Adapter to save a file from upload ($_FILES)
+ * Adapter to save a file from upload ($_FILES).
  */
 class Upload implements AdapterInterface
 {
@@ -38,7 +39,7 @@ class Upload implements AdapterInterface
     public static function save($original, $destination)
     {
         if (empty($original['tmp_name']) || !empty($original['error'])) {
-            throw new \Exception("Unable to copy the uploaded file because has an error");
+            throw new \Exception('Unable to copy the uploaded file because has an error');
         }
 
         if (!copy($original['tmp_name'], $destination)) {
