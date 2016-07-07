@@ -39,7 +39,7 @@ class Url implements AdapterInterface
     public static function save($original, $destination)
     {
         if (!@rename($original['tmp_name'], $destination)) {
-            throw new \Exception("Unable to copy '{$original['tmp_name']}' to '{$destination}'");
+            throw new \RuntimeException("Unable to copy '{$original['tmp_name']}' to '{$destination}'");
         }
     }
 }

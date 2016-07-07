@@ -41,7 +41,7 @@ class Base64 implements AdapterInterface
         $fileData = explode(';base64,', $original, 2);
 
         if (!@file_put_contents($destination, base64_decode($fileData[1]))) {
-            throw new \Exception("Unable to copy base64 to '{$destination}'");
+            throw new \RuntimeException("Unable to copy base64 to '{$destination}'");
         }
     }
 }

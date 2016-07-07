@@ -307,13 +307,17 @@ class Uploader
 
         $destination = $this->getDestination(true);
 
-        if ($this->getOverwrite() || !is_file($destination)) {
-            if ($this->getCreateDir() && !is_dir(dirname($destination))) {
-                mkdir(dirname($destination), 0777, true);
-            }
-
-            call_user_func("{$this->adapter}::save", $this->original, $destination);
+        if (!$this->getOverwrite() && is_file($destination)) {
+            throw new \RuntimeException(sprintf('Cannot override the file "%s"', $destination));
         }
+
+        if ($this->getCreateDir() && !is_dir(dirname($destination))) {
+            if (mkdir(dirname($destination), 0777, true) === false) {
+                throw new \RuntimeException(sprintf('Unable to create the directory "%s"', dirname($destination)));
+            }
+        }
+
+        call_user_func("{$this->adapter}::save", $this->original, $destination);
 
         return $this;
     }

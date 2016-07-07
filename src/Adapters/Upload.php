@@ -39,11 +39,13 @@ class Upload implements AdapterInterface
     public static function save($original, $destination)
     {
         if (empty($original['tmp_name']) || !empty($original['error'])) {
-            throw new \Exception('Unable to copy the uploaded file because has an error');
+            throw new \RuntimeException('Unable to copy the uploaded file because has an error');
         }
 
-        if (!copy($original['tmp_name'], $destination)) {
-            throw new \Exception("Unable to copy '{$original['tmp_name']}' to '{$destination}'");
+        $moved = php_sapi_name() == 'cli' ? rename($original['tmp_name'], $destination) : move_uploaded_file($original['tmp_name'], $destination);
+
+        if (!$moved) {
+            throw new \RuntimeException("Unable to copy '{$original['tmp_name']}' to '{$destination}'");
         }
 
         chmod($destination, 0755);

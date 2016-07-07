@@ -32,7 +32,7 @@ interface AdapterInterface
      * @param mixed  $original
      * @param string $destination
      *
-     * @throws \Exception On error
+     * @throws \RuntimeException On error
      */
     public static function save($original, $destination);
 }
